@@ -1,17 +1,16 @@
 package woojinsim.Cycle.Commands;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
-import java.time.OffsetDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Locale;
-
-import org.jsoup.Jsoup;
+import java.util.Calendar;
+import java.util.Date;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.jsoup.Jsoup;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
@@ -22,7 +21,8 @@ public class Warframe {
 	public static void run(GuildMessageReceivedEvent event, String[] args) {
 		JSONObject jsonObject = null;
 		JSONArray jsonArray = null;
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSX");
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'Z");
+		SimpleDateFormat resultDate = new SimpleDateFormat("a hh:mm");
 		
 		event.getChannel().sendTyping().queue();
 		try {
@@ -35,6 +35,7 @@ public class Warframe {
 			JSONParser parser = new JSONParser();
 			Object obj = parser.parse(rawJson);
 			jsonObject = (JSONObject) obj;
+			String resultString;
 			
 			if (args.length < 2) {
 				JSONObject jsonObj = (JSONObject) jsonObject.get("arbitration");
@@ -47,7 +48,7 @@ public class Warframe {
 				usage.setThumbnail("https://cdn.discordapp.com/emojis/714873205768060938.png");
 				
 				jsonArray = (JSONArray) jsonObject.get("news");
-				String resultString = "";
+				resultString = "";
 				for(int i = 0; i < jsonArray.size(); i++) {
 					JSONObject result = (JSONObject) jsonArray.get(i);
 					resultString = resultString + " ▫ [" + result.get("message") + "](" + result.get("link") + ")\n";
@@ -56,26 +57,22 @@ public class Warframe {
 					resultString = " ▫ 전달할 소식이 없습니다.";
 				usage.addField("뉴스", resultString, false);
 				
-				OffsetDateTime odt = OffsetDateTime.parse(jsonObj.get("expiry").toString(), formatter);
-				System.out.println(DateTimeFormatter.ofPattern("MM/uuuu/dd hh:mm:ss a", Locale.KOREAN).format(odt));
-				usage.addField("중재", "_**노드:**_ " + jsonObj.get("node") + " - " + jsonObj.get("type").toString().replace("Disruption", "교란") + "\n_**팩션:**_ " + jsonObj.get("enemy").toString().toLowerCase()
-						.replace("orokin", "오로킨")
-						.replace("grineer", "그리니어")
-						.replace("corpus", "코퍼스")
-						.replace("infested", "인페스티드"),
+				Date date = formatter.parse(jsonObj.get("expiry").toString() + "+0000");
+				usage.addField("중재",
+						" ▫ **노드│**" + jsonObj.get("node") + " - " + jsonObj.get("type").toString().replace("Disruption", "교란") + 
+						"\n ▫ **팩션│**" + jsonObj.get("enemy").toString().toLowerCase().replace("orokin", "오로킨")
+							.replace("grineer", "그리니어")
+							.replace("corpus", "코퍼스")
+							.replace("infested", "인페스티드") +
+						"\n ▫ **만료│**" + resultDate.format(date),
 						true);
-				usage.addBlankField(true);
-				
-				jsonObj = (JSONObject) jsonObject.get("sortie");
-				usage.addField("출격 (개발중)", (String) jsonObj.get("boss"), true);
-				
 				event.getChannel().sendMessage(usage.build()).queue();
 				
 			} else if (args[1].equals("중재") || args[1].equals("중제")) {
 				// TODO 따로 기능 나눠만들기
 			}
 			
-		} catch (IOException | ParseException | NullPointerException e) {
+		} catch (IOException | ParseException | NullPointerException | java.text.ParseException e) {
 			// 연결 불능
 			EmbedBuilder error = new EmbedBuilder();
 			error.setColor(0xff3923);
@@ -83,7 +80,5 @@ public class Warframe {
 			error.setDescription(e.toString());
 			event.getChannel().sendMessage(error.build()).queue();
 		}
-		
-		
 	}
 }

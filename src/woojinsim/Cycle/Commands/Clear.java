@@ -21,7 +21,7 @@ public class Clear {
 				List<Message> messages = event.getChannel().getHistory().retrievePast(Integer.parseInt(args[1])).complete();
 				event.getChannel().deleteMessages(messages).queue();
 				EmbedBuilder success = new EmbedBuilder();
-				success.setColor(0x22ff2a);
+				success.setColor(0x578BD2);
 				success.setTitle("성공적으로 " + messages.size() + " 개의 메세지를 삭제했습니다");
 				success.setFooter(event.getMessage().getAuthor().getAsTag() + " 님께서 실행함", event.getMessage().getAuthor().getAvatarUrl());
 				event.getChannel().sendMessage(success.build()).queue();
