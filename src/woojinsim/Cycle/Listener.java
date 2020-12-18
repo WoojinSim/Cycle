@@ -1,7 +1,5 @@
 package woojinsim.Cycle;
 
-import java.io.IOException;
-
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import woojinsim.Cycle.Commands.*;
@@ -20,12 +18,8 @@ public class Listener extends ListenerAdapter{
 				Clear.run(event, args);
 			} else if (command.equals("워프레임") || command.equals("워프래임") || command.equals("웦") || command.equals("웦렘") || command.equals("웦램") || command.equals("warframe") || command.equals("wf")) {
 				Warframe.run(event, args);
-			} else if (command.equals("코로나")) {
-				try {
-					Corona.run(event, args);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+			} else if (command.equals("코로나") || command.equals("야로나") || command.equals("corona")) {
+				Corona.run(event, args);
 			}
 		}
 	}

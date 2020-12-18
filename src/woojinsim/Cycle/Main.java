@@ -30,5 +30,6 @@ public class Main {
 		jda.getPresence().setActivity(Activity.watching("사용설명서"));
 		
 		jda.addEventListener(new Listener());
+		System.out.println("온라인!");
 	}
 }

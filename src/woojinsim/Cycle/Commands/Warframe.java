@@ -37,7 +37,7 @@ public class Warframe {
 			String resultString;
 			
 			if (args.length < 2) {
-				JSONObject jsonObj = (JSONObject) jsonObject.get("arbitration");
+				
 				EmbedBuilder usage = new EmbedBuilder();
 				usage.setColor(0x578BD2);
 				usage.setTitle("🔹 워프레임 이벤트 트레커");
@@ -46,6 +46,7 @@ public class Warframe {
 				usage.setFooter(event.getMessage().getAuthor().getAsTag() + " 님께서 실행함", event.getMessage().getAuthor().getAvatarUrl());
 				usage.setThumbnail("https://cdn.discordapp.com/emojis/714873205768060938.png");
 				
+				// 뉴스 필드 작성
 				jsonArray = (JSONArray) jsonObject.get("news");
 				resultString = "";
 				for(int i = 0; i < jsonArray.size(); i++) {
@@ -56,6 +57,21 @@ public class Warframe {
 					resultString = " ▫ 전달할 소식이 없습니다.";
 				usage.addField("뉴스", resultString, false);
 				
+				// 얼럿 필드 작성
+				jsonArray = (JSONArray) jsonObject.get("alerts");
+				resultString = "";
+				for(int i = 0; i < jsonArray.size(); i++) {
+					JSONObject result = (JSONObject) jsonArray.get(i);
+					JSONObject mission = (JSONObject) result.get("mission");
+					JSONObject reward = (JSONObject) mission.get("reward");
+					resultString = resultString + " ▫ " + mission.get("description") + " - " + reward.get("asString") + "\n";
+				}
+				if (jsonArray.size() < 1)
+					resultString = " ▫ 전달할 소식이 없습니다.";
+				usage.addField("얼럿", resultString, false);
+				
+				// 중재 필드 작성
+				JSONObject jsonObj = (JSONObject) jsonObject.get("arbitration");
 				Date date = formatter.parse(jsonObj.get("expiry").toString() + "+0000");
 				usage.addField("중재",
 						" ▫ **노드│**" + jsonObj.get("node") + " - " + jsonObj.get("type").toString().replace("Disruption", "교란") + 
