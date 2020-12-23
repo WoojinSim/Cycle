@@ -18,8 +18,7 @@ public class Corona {
 		event.getChannel().sendTyping().queue();
 		try {
 			DecimalFormat df = new DecimalFormat("#,###");
-			Document doc;
-			doc = Jsoup.connect(address).get();
+			Document doc = Jsoup.connect(address).get();
 			Elements items = doc.select(".status_today");
 			System.out.println(items.select(".info_02").attr("em"));
 			
@@ -29,7 +28,7 @@ public class Corona {
 			output.setDescription("현재 코로나바이러스감염증-19의 현황입니다.");
 			output.setTimestamp(Instant.now());
 			output.setFooter(event.getMessage().getAuthor().getAsTag() + " 님께서 실행함", event.getMessage().getAuthor().getAvatarUrl());
-			output.setThumbnail("https://i.imgur.com/FoNkhIF.png");
+			output.setThumbnail("https://i.imgur.com/Z7o8tau.png");
 			
 			output.addField("일일확진자", String.format(" ▫ **국내발생** %s 명\n ▫ **해외유입** %s 명", df.format(Integer.valueOf(items.select(".info_02 em").text())), df.format(Integer.valueOf((items.select(".info_03 em").text())))), true);
 			items = doc.select(".status_info");
@@ -39,7 +38,6 @@ public class Corona {
 			output.addField("세계현황", String.format(" ▫ **확진환자** %s 명\n ▫ **사망자**　 %s 명\n ▫ **발생국가** %s 국가", infection[1], death[1], death[2]), false);
 			event.getChannel().sendMessage(output.build()).queue();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			EmbedBuilder error = new EmbedBuilder();
 			error.setColor(0xff3923);
 			error.setTitle("오류가 발생했습니다");

@@ -20,6 +20,8 @@ public class Listener extends ListenerAdapter{
 				Warframe.run(event, args);
 			} else if (command.equals("코로나") || command.equals("야로나") || command.equals("corona")) {
 				Corona.run(event, args);
+			} else if (command.equals("블랙서바이벌") || command.equals("블렉서바이벌") || command.equals("블서")) {
+				BlackSurvival.run(event, args);
 			}
 		}
 	}
